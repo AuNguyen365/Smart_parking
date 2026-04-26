@@ -1,1 +1,2 @@
-# Placeholder for feature_extraction.py
+# TODO: Ch3: HOG features
+# Implement Histogram of Oriented Gradients feature extraction
