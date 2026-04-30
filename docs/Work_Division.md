@@ -1,40 +1,54 @@
 # Bảng Phân Chia Công Việc - Dự án Smart Parking (Nhóm 6 Thành viên)
 
-Dưới đây là bảng phân công nhiệm vụ chi tiết cho 6 thành viên, đảm bảo mỗi người phụ trách một phần chuyên biệt trong pipeline xử lý ảnh và hệ thống ứng dụng theo yêu cầu của Bài tập lớn.
+Dưới đây là danh sách chi tiết các file cụ thể mà mỗi thành viên sẽ trực tiếp tương tác, chỉnh sửa và chịu trách nhiệm chính.
 
-| Thành viên | Vai trò chính | Công việc cụ thể | Kỹ thuật CV tương ứng |
+| Thành viên | Vai trò chính | Các file cụ thể cần tương tác | Công việc cụ thể |
 | :--- | :--- | :--- | :--- |
-| **Thành viên 1** (Trưởng nhóm) | **Kiến trúc hệ thống & Tài liệu** | - Thiết kế kiến trúc tổng thể của pipeline và ứng dụng.<br>- Kết nối các module CV vào hệ thống chính.<br>- Viết báo cáo kỹ thuật và tài liệu hướng dẫn. | **System Architecture** |
-| **Thành viên 2** | **Tiền xử lý & Phân đoạn** | - Triển khai các kỹ thuật tiền xử lý (Grayscale, CLAHE, Gaussian Blur).<br>- Xây dựng thuật toán phân đoạn dựa trên phương sai (Variance). | **Chương 2 & 4** |
-| **Thành viên 3** | **Đặc trưng & Nhận dạng** | - Triển khai trích xuất đặc trưng HOG.<br>- Huấn luyện và tối ưu hóa mô hình phân loại SVM. | **Chương 3 & 5** |
-| **Thành viên 4** | **Kỹ sư Dữ liệu & Đánh giá** | - Thu thập video, trích xuất khung hình và gán nhãn dữ liệu.<br>- Thực hiện Data Augmentation.<br>- Đo lường độ chính xác (Accuracy, Precision, Recall). | **Data Engineering** |
-| **Thành viên 5** | **Phát triển Backend** | - Xây dựng API Server với FastAPI.<br>- Xử lý WebSocket cho luồng video thời gian thực.<br>- Viết logic quản lý trạng thái bãi đỗ xe. | **Backend Development** |
-| **Thành viên 6** | **Phát triển Frontend** | - Xây dựng giao diện Web (Vue 3).<br>- Triển khai công cụ vẽ vùng đỗ xe (Bounding Box).<br>- Hiển thị kết quả nhận diện và chỉ đường. | **Frontend Development** |
+| **Thành viên 1** (Trưởng nhóm) | **Kiến trúc & Tài liệu** | - `backend/core_cv/pipeline.py`<br>- `README.md`<br>- `docs/Work_Division.md`<br>- `docs/Báo_cáo_Final.pdf` | - Kết nối các module CV vào một luồng duy nhất.<br>- Viết báo cáo và tài liệu hướng dẫn hệ thống. |
+| **Thành viên 2** | **Tiền xử lý & Phân đoạn** | - `backend/core_cv/preprocessing.py`<br>- `backend/core_cv/segmentation.py` | - Xử lý ảnh (CLAHE, Blur, Grayscale).<br>- Thuật toán phân đoạn vùng ô đỗ xe (Variance). |
+| **Thành viên 3** | **Đặc trưng & Nhận dạng** | - `backend/core_cv/feature_extraction.py`<br>- `backend/core_cv/train_svm.py`<br>- `backend/models/svm_parking_model.xml` | - Trích xuất đặc trưng HOG.<br>- Huấn luyện và xuất file mô hình SVM (`.xml`). |
+| **Thành viên 4** | **Kỹ sư Dữ liệu & Đánh giá** | - `backend/extract_frames.py`<br>- `backend/data/train/ (occupied, empty)`<br>- `notebooks/*.ipynb` (00, 01, 02) | - Cắt ảnh từ video, gán nhãn dữ liệu.<br>- Chạy thực nghiệm, đánh giá độ chính xác (Recall/Precision). |
+| **Thành viên 5** | **Phát triển Backend** | - `backend/main.py`<br>- `backend/requirements.txt`<br>- `backend/models/parking_spots.json` | - Xây dựng API FastAPI và WebSocket Server.<br>- Lưu trữ/Quản lý tọa độ các ô đỗ xe vào file JSON. |
+| **Thành viên 6** | **Phát triển Frontend** | - `frontend/src/App.vue`<br>- `frontend/src/components/BoundingBox.vue`<br>- `frontend/src/components/VideoManager.vue`<br>- `frontend/src/services/socketClient.js` | - Xây dựng giao diện điều khiển và sơ đồ bãi xe.<br>- Code chức năng vẽ Bounding Box và kết nối WebSocket. |
 
 ---
 
-## Mô tả chi tiết công việc
+## Chi tiết nhiệm vụ và các File tương ứng
 
 ### 1. Thành viên 1: Trưởng nhóm & Kiến trúc sư
-- **Pipeline Integration:** Chịu trách nhiệm kết nối các phần code của Thành viên 2 và 3 thành một luồng xử lý đồng bộ trong `pipeline.py`.
-- **System Documentation:** Chịu trách nhiệm chính cho file Báo cáo (25% số điểm), đảm bảo đủ 8 mục yêu cầu và đúng định dạng IEEE/APA cho tài liệu tham khảo.
+*   **File chính:** `backend/core_cv/pipeline.py`
+    *   *Nhiệm vụ:* Import các hàm từ `preprocessing`, `segmentation`, `feature_extraction` để tạo ra function `process_frame()` hoàn chỉnh cho Backend gọi vào.
+*   **Tài liệu:** `README.md`, `Work_Division.md`. Đảm bảo sơ đồ kiến trúc hệ thống khớp với thực tế code.
 
-### 2. Thành viên 2: Kỹ sư Tiền xử lý (Chương 2 & 4)
-- **Image Enhancement:** Sử dụng CLAHE để chuẩn hóa độ sáng cho các vùng ảnh bị bóng râm che khuất, giúp các bước sau đạt độ chính xác cao hơn.
-- **Background Analysis:** Sử dụng phương sai (Variance) để lọc nhanh các ô đỗ xe trống, giúp giảm tải tính toán cho CPU bằng cách bỏ qua các bước HOG/SVM đối với nền phẳng.
+### 2. Thành viên 2: Kỹ sư Tiền xử lý
+*   **File chính:** `backend/core_cv/preprocessing.py`
+    *   *Nhiệm vụ:* Viết hàm `apply_preprocessing(image)` để làm sạch ảnh, giảm nhiễu trước khi đưa vào nhận dạng.
+*   **File phụ:** `backend/core_cv/segmentation.py`
+    *   *Nhiệm vụ:* Triển khai hàm tính `variance` để lọc các ô trống mà không cần chạy AI, giúp tăng hiệu năng.
 
-### 3. Thành viên 3: Chuyên gia Nhận dạng (Chương 3 & 5)
-- **HOG Implementation:** Thiết lập các tham số cho HOG Descriptor để trích xuất được "bản sắc" hình học của các loại xe khác nhau.
-- **SVM Classification:** Sử dụng thư viện `cv2.ml` để huấn luyện bộ phân loại. Tinh chỉnh các tham số hạt nhân (kernel) để tách biệt tốt nhất giữa hai lớp: `occupied` và `empty`.
+### 3. Thành viên 3: Chuyên gia Nhận dạng
+*   **File code:** `backend/core_cv/feature_extraction.py`, `backend/core_cv/train_svm.py`
+    *   *Nhiệm vụ:* Cấu hình các tham số HOG (pixels per cell, cells per block). Viết script huấn luyện SVM.
+*   **File output:** `backend/models/svm_parking_model.xml`
+    *   *Nhiệm vụ:* Đây là "trái tim" của hệ thống, thành viên 3 chịu trách nhiệm độ chính xác của file này.
 
 ### 4. Thành viên 4: Kỹ sư Dữ liệu & Kiểm thử
-- **Data Collection:** Thu thập video thực tế từ các bãi đỗ xe (đáp ứng yêu cầu "Dữ liệu thực tế" trong PDF).
-- **Metric Evaluation:** Sau khi Thành viên 3 có model, Thành viên 4 sẽ chạy kiểm thử trên tập dữ liệu độc lập để tính toán các chỉ số định lượng (Accuracy, F1-score) cho báo cáo.
+*   **File chính:** `backend/extract_frames.py`
+    *   *Nhiệm vụ:* Viết script giúp các thành viên khác dễ dàng cắt dữ liệu từ video mới để mở rộng tập dataset.
+*   **Dữ liệu:** Quản lý thư mục `backend/data/`. Đảm bảo dữ liệu không bị nhầm lẫn giữa hai lớp "có xe" và "không xe".
+*   **Phân tích:** Các file Notebook trong `notebooks/` để vẽ biểu đồ loss/accuracy.
 
 ### 5. Thành viên 5: Lập trình viên Backend
-- **Real-time Processing:** Xử lý việc nhận khung hình từ camera và trả kết quả về frontend qua WebSocket mỗi 200ms.
-- **Smart Routing:** Triển khai thuật toán tìm kiếm vị trí trống gần nhất dựa trên tọa độ tâm của các bounding box.
+*   **File chính:** `backend/main.py`
+    *   *Nhiệm vụ:* Setup FastAPI app, định nghĩa các route `@app.get("/status")` và xử lý `@app.websocket("/ws")`.
+*   **Quản lý cấu hình:** `backend/models/parking_spots.json`
+    *   *Nhiệm vụ:* Khi người dùng vẽ ô đỗ xe trên Web, Backend nhận tọa độ và ghi vào file này để hệ thống ghi nhớ sau khi khởi động lại.
 
 ### 6. Thành viên 6: Lập trình viên Frontend
-- **Interactive UI:** Tạo giao diện Dashboard hiển thị sơ đồ bãi đỗ xe sống động.
-- **Configurable Tool:** Phát triển tính năng cho phép người dùng cấu hình hệ thống bằng cách vẽ trực tiếp các ô đỗ xe lên màn hình video, giúp hệ thống có tính tùy biến cao.
+*   **Layout chính:** `frontend/src/App.vue`
+    *   *Nhiệm vụ:* Bố cục tổng thể của Dashboard (Video bên trái, Bảng điều khiển bên phải).
+*   **Components:** 
+    *   `BoundingBox.vue`: Logic cho phép dùng chuột vẽ hình chữ nhật lên màn hình.
+    *   `VideoManager.vue`: Xử lý việc hiển thị canvas stream từ Backend.
+*   **Kết nối:** `frontend/src/services/socketClient.js`
+    *   *Nhiệm vụ:* Viết logic gửi/nhận dữ liệu JSON qua WebSocket để cập nhật trạng thái ô đỗ xe thời gian thực.
